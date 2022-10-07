@@ -1,9 +1,10 @@
+import {Button} from "@mui/material";
 import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import {Link, Outlet} from "react-router-dom";
 import styled from "styled-components";
 
-const Tab = styled.header`
-    background: black;
+const Tab = styled.header `
+    background: darkgreen;
     width: 100%;
     display: flex;
     color: white;
@@ -13,11 +14,11 @@ const Tab = styled.header`
     box-sizing: border-box;
 `;
 
-const MenuList = styled.div`
+const MenuList = styled.div `
     display: flex;
     margin: 0px 20px;
 `;
-const MenuItem = styled.div`
+const MenuItem = styled.div `
     margin: 0px 20px;
 `;
 
@@ -28,11 +29,19 @@ function TabBar() {
             <Tab>
                 <div>TAB BAR</div>
                 <MenuList>
-                    <MenuItem>
+                    <Button variant="outlined">
                         <Link to={"/"}>Home</Link>
-                        <Link to={"/profiles"}>Profiles</Link>
+                    </Button>
+                    <Button variant="outlined">
+                        <Link to={"/todo"}>TodoList</Link>
+                    </Button>
+                    <Button variant="outlined">
                         <Link to={"/about"}>About</Link>
-                    </MenuItem>
+                    </Button>
+                    <Button variant="outlined">
+                        <Link to={"/login"}>login</Link>
+                    </Button>
+
                 </MenuList>
             </Tab>
             <Outlet/>

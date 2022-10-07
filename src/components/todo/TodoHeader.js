@@ -33,7 +33,7 @@ function TodoHeader() {
 
     useEffect(() => {
         const {loading, data: todos, error} = state.todos;
-        const undoneTasks = todos ? todos?.filter(todo => !todo.done) : [];   // done=true인 할일만 filter
+        const undoneTasks = todos ? todos?.filter(todo => todo.status === 'NEVER') : [];   // done=true인 할일만 filter
         setCount(undoneTasks.length);
     }, [state])
 

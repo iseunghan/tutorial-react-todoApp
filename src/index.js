@@ -8,6 +8,7 @@ import rootReducer from './modules';
 import thunk from 'redux-thunk';
 import {Provider} from 'react-redux';
 import logger from 'redux-logger';
+import { BrowserRouter } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -16,9 +17,11 @@ const store = createStore(rootReducer, applyMiddleware(thunk, logger));
 
 root.render (
   <React.StrictMode>
+      <BrowserRouter>
       <Provider store={store}>
           <App/>
       </Provider>
+      </BrowserRouter>
   </React.StrictMode>
 );
 

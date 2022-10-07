@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { MdAdd } from 'react-icons/md';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createTodo, getTodos } from "../../modules/todos";
+import { useSelect } from "@mui/base";
 
 const CircleButton = styled.button`
   background: #38d9a9;
@@ -83,19 +84,18 @@ const Input = styled.input`
  */
 function TodoCreate() {
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState('');
+    const [title, setTitle] = useState('');
+    const {username, jwt} = useSelector(state => state.accounts.account);
 
     // const dispatch = useTodosDispatch();
     // const nextId = useTodoNextId();
     const dispatch = useDispatch();
     const onToggle = () => setOpen(!open);
-    const onChange = e => setValue(e.target.value);
+    const onChange = e => setTitle(e.target.value);
     const onSubmit = (e) => {
         e.preventDefault(); // 새로고침 방지 & 기본동작 방지
-        console.log("input: ", value);
-        dispatch(createTodo(value));
-        setValue('');
-        // dispatch(getTodos());
+        dispatch(createTodo({title, username}));
+        setTitle('');
     };
 
     return (
@@ -107,7 +107,7 @@ function TodoCreate() {
                             autoFocus 
                             placeholder="할 일을 입력 후, Enter를 눌러주세요" 
                             onChange={ onChange }
-                            value= { value }
+                            value= { title }
                         />
                     </InsertForm>
                 </InsertFormPositioner>

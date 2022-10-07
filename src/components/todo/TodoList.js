@@ -23,8 +23,8 @@ function TodoList({ todos }) {
                 <TodoItem
                     key={todo.id}
                     id={todo.id}
-                    desc={todo.desc}
-                    done={todo.done}
+                    title={todo.title}
+                    status={todo.status}
                 />
             ))}
         </TodoListBlock>

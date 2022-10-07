@@ -41,7 +41,7 @@ const CheckCircle = styled.div`
   margin-right: 20px;
   cursor: pointer;
   ${props =>
-    props.done &&
+    props.status !== 'NEVER' &&
     css`
       border: 1px solid #38d9a9;
       color: #38d9a9;
@@ -53,30 +53,31 @@ const Text = styled.div`
   font-size: 21px;
   color: #495057;
   ${props =>
-    props.done &&
+    props.status !== 'NEVER' &&
     css`
       color: #ced4da;
     `}
 `;
 
 // props.을 사용하지 않고 property 명을 적어줌으로써 간결하게 표현 가능!
-function TodoItem({ id, done, desc }) {
+function TodoItem({ id, status, title }) {
+    const { username, jwt } = useSelector(state => state.accounts.account);
     const dispatch = useDispatch();
 
     const $updateTodo = () => {
-        dispatch(updateTodo({id}));
+        dispatch(updateTodo({id, username}));
     }
 
     const $deleteTodo = () => {
-        dispatch(deleteTodo({id}));
+        dispatch(deleteTodo({id, username}));
     }
 
     return (
         <TodoItemBlock>
-            <CheckCircle done={ done } onClick={ $updateTodo }>
-                { done && <MdDone /> }  { /* &&은 done이 false일 때 MdDone이 사용됨, true라면 해당 코드들은 무시됨. */ }
+            <CheckCircle done={ status } onClick={ $updateTodo }>
+                { status !== 'NEVER' && <MdDone /> }  { /* &&은 done이 false일 때 MdDone이 사용됨, true라면 해당 코드들은 무시됨. */ }
             </CheckCircle>
-            <Text done={ done }>{ desc }</Text>
+            <Text done={ status }>{ title }</Text>
             <Remove>
                 <MdDelete onClick={ $deleteTodo }/>
             </Remove>
