@@ -1,5 +1,9 @@
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { goHome } from "../modules/todos";
+
 /**********************************************
-    Promise에 기반한 Thunk를 생성해주는 함수
+ Promise에 기반한 Thunk를 생성해주는 함수
  **********************************************/
 export const createPromiseThunk = (type, promiseCreator) => {
     const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
@@ -9,19 +13,19 @@ export const createPromiseThunk = (type, promiseCreator) => {
     // 예: writeComment({ postId: 1, text: '댓글 내용' });
     return param => async dispatch => {
         // 요청 시작
-        dispatch({ type, param });
+        dispatch({type, param});
         try {
             // 결과물의 이름을 payload라는 이름으로 통일!
             const payload = await promiseCreator(param);
             dispatch({type: SUCCESS, payload})  // success
-        } catch(e) {
+        } catch (e) {
             dispatch({type: ERROR, payload: e, error: true});   // fail
         }
     };
 };
 
 /**********************************************
-    리듀서에서 사용 할 수 있는 여러 유틸 함수들입니다.
+ 리듀서에서 사용 할 수 있는 여러 유틸 함수들입니다.
  **********************************************/
 export const reducerUtils = {
     // 초기 상태. 초기 data 값은 기본적으로 null 이지만
@@ -36,13 +40,13 @@ export const reducerUtils = {
     loading: (prevState = null) => ({
         loading: true,
         data: prevState,
-        error: null
+        error: false
     }),
     // 성공 상태
     success: payload => ({
         loading: false,
         data: payload,
-        error: null
+        error: false
     }),
     // 실패 상태
     error: error => ({
@@ -52,31 +56,40 @@ export const reducerUtils = {
     }),
     success_CREATE_TODO: (state, payload) => ({
         loading: false,
-        data: state.todos.data.concat(payload),
+        data: {
+            ...state.todos.data,
+            todoList: state.todos.data.concat(payload)
+        },
         error: null
     }),
     success_UPDATE_TODO: (state, id) => ({
         loading: false,
-        data: state.todos.data.map(t => {
-            if(t.id === id) {
-                t.status = t.status === 'DONE' ? 'NEVER' : 'DONE';
-            }
-            return t;
-        }),
+        data: {
+            ...state.todos.data,
+            todoList: state.todos.data.todoList.map(t => {
+                if (t.id === id) {
+                    t.status = t.status === 'DONE' ? 'NEVER' : 'DONE';
+                }
+                return t;
+            })
+        },
         error: null
     }),
     success_DELETE_TODO: (state, id) => ({
         loading: false,
-        data: state.todos.data.filter(t => t.id !== id),
+        data: {
+            ...state.todos.data,
+            todoList: state.todos.data.todoList.filter(t => t.id !== id)
+        },
         error: null
     }),
 };
 
 
 /**********************************************
-  비동기 관련 액션들을 처리하는 리듀서를 만들어줍니다.
-  type 은 액션의 타입, key 는 상태의 key (예: posts, post) 입니다.
-  호출은 다음과 같이 한다 => handleAsyncActions(GET_POST, 'post')(state, action);
+ 비동기 관련 액션들을 처리하는 리듀서를 만들어줍니다.
+ type 은 액션의 타입, key 는 상태의 key (예: posts, post) 입니다.
+ 호출은 다음과 같이 한다 => handleAsyncActions(GET_POST, 'post')(state, action);
  **********************************************/
 /** =====================================
  * GET TODO List
@@ -133,7 +146,6 @@ export const handleAsyncCreateActions = (type, key, keepData = false) => {
 };
 
 
-
 /**
  * 통합 메소드) id를 이용해 요청을 보내는 Thunk
  */
@@ -154,18 +166,18 @@ export const createPromiseThunkById = (
         // 파라미터는 하나만 들어온다고 가정! 파라미터 여러개일 때, 추후에 변경요망
         console.log("param: ", param);
         const $param = idSelector(param);
-        dispatch({ type, meta: $param });
+        dispatch({type, meta: $param});
         try {
             const payload = await promiseCreator($param);
-            dispatch({ type: SUCCESS, payload, meta: $param });
+            dispatch({type: SUCCESS, payload, meta: $param});
         } catch (e) {
-            dispatch({ type: ERROR, error: true, payload: e, meta: $param });
+            dispatch({type: ERROR, error: true, payload: e, meta: $param});
         }
     };
 };
 
 /**
- * 
+ *
  */
 // id별로 처리하는 유틸함수
 export const handleAsyncActionsById = (type, key, keepData = false) => {
@@ -210,18 +222,15 @@ export const handleAsyncActionsById = (type, key, keepData = false) => {
 
 /** ===============================================
  *  Account API
-=============================================== */
- export const handleAsyncSignInActions = (type, key, keepData = false) => {
+ =============================================== */
+export const handleAsyncSignInActions = (type, key, keepData = false) => {
     const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
     return (state, action) => {
         switch (action.type) {
             case SUCCESS:
                 return {
                     ...state,
-                    [key]: {
-                        ...state[key],
-                        data: action.payload
-                    }
+                    [key]: reducerUtils.success(action.payload)
                 };
             case ERROR:
                 return {
@@ -241,15 +250,16 @@ export const handleAuthenticateActions = (type, key) => {
             case SUCCESS:
                 return {
                     ...state,
-                    [key]: {
-                        username: action.payload.username,
-                        jwt: action.payload.jwt
-                    }
+                    [key]: 
+                        reducerUtils.success({
+                            username: action.payload.username,
+                            jwt: action.payload.jwt
+                        }),
                 };
             case ERROR:
                 return {
                     ...state,
-                    [key]: reducerUtils.error("error!")
+                    [key]: reducerUtils.error(true)
                 };
             default:
                 return state;

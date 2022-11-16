@@ -3,9 +3,10 @@ import { Cookies } from "react-cookie";
 /**
  * Account API
  */
- const BASE_URL = "/user/accounts"    // package.json -> proxy setting!
-var token = "";
- 
+const BASE_URL = "/user/accounts"    // package.json -> proxy setting!
+
+const cookie = new Cookies();
+
 export const signIn = async (account) => {
     let data = JSON.stringify(account);
     const response = await axios.post(
@@ -17,34 +18,57 @@ export const signIn = async (account) => {
             }
         }
     );
-    token = response.headers.authorization ?? token;
+    const token = response.headers.authorization;
 
     let payload = {
         "username": account.username,
         "jwt": token
     }
-    // console.log("response> ", payload);
     return payload;
 };
 
-export const authenticate = () => {
-    const cookies = new Cookies();
-    const jwt = cookies.get('Authorization');
-    console.log("cookie: ", jwt)
-
-    if(!jwt) {
-        throw Error("unauth");
+export const authenticate = async () => {
+    const response = await axios.get(
+        '/authenticate',
+        {
+            headers: {
+                'content-type': 'application/json'
+            }
+        }
+    );
+    // no auth
+    if(response.status !== 200) {
+        return {
+            message: "인증이 필요합니다."
+        }
     }
 
+    /**
+     * 일단 백엔드에서 exposeHeader를 하지 않아서 보이지 않는다.
+     * 임시 방편으로 cookie를 읽어서 하는 방식으로 해결.
+     */
+    // const jwt = response.headers.authorization;
+    
+    const jwt = cookie.get('Authorization');
     // extract jwt
-    console.log(jwt)
-    const decodeJWT = atob(jwt.split('.')[1]);
+    let decodeJWT;
+    try {
+     decodeJWT = atob(jwt.split('.')[1]);
+    } catch (e) {
+        
+    }
     const username = JSON.parse(decodeJWT).sub
-    console.log(username)
+    console.log("extract Token: ", username);
+
+    // Cookie에 값을 설정?
+    // const cookies = new Cookies();
+    // const jwt = cookies.get('Authorization');
+    // console.log("cookie: ", jwt)
 
     let payload = {
         "username": username,
         "jwt": jwt
     }
+
     return payload;
 }

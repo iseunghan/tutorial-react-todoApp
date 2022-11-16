@@ -85,7 +85,7 @@ const Input = styled.input`
 function TodoCreate() {
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState('');
-    const {username, jwt} = useSelector(state => state.accounts.account);
+    const {data, loading, error} = useSelector(state => state.accounts.account);
 
     // const dispatch = useTodosDispatch();
     // const nextId = useTodoNextId();
@@ -94,7 +94,7 @@ function TodoCreate() {
     const onChange = e => setTitle(e.target.value);
     const onSubmit = (e) => {
         e.preventDefault(); // 새로고침 방지 & 기본동작 방지
-        dispatch(createTodo({title, username}));
+        dispatch(createTodo({title, username: data.username}));
         setTitle('');
     };
 

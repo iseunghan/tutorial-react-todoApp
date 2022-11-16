@@ -1,10 +1,10 @@
-import { Grid, Pagination } from "@mui/material";
 import React from "react";
 import { createGlobalStyle } from "styled-components";
 import TodoCreate from "../components/todo/TodoCreate";
 import TodoHeader from "../components/todo/TodoHeader";
 import TodoTemplate from "../components/todo/TodoTemplate";
 import TodoListContainer from "../containers/TodoListContainers";
+import SignIn from "./LoginPage";
 
 const GlobalStyle = createGlobalStyle `
   body {
@@ -13,6 +13,7 @@ const GlobalStyle = createGlobalStyle `
 `;
 
 function TodoListPage() {
+    
     return (<>
         <GlobalStyle />
         <TodoTemplate>
@@ -20,9 +21,6 @@ function TodoListPage() {
             <TodoListContainer/>
             <TodoCreate />
         </TodoTemplate>
-        <Grid container justifyContent={"center"}>
-        <Pagination count={10} shape="rounded" />
-        </Grid>
     </>);
 }
 

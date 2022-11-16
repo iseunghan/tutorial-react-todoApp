@@ -28,14 +28,13 @@ const TodoHeadBlock = styled.div `
 `;
 
 function TodoHeader() {
-    const state = useSelector(state => state.todos);
+    const {data, loading, error} = useSelector(state => state.todos.todos);
     const [count, setCount] = useState(0);  // 여기서만 사용할 카운트 변수이므로 useState로 관리
 
     useEffect(() => {
-        const {loading, data: todos, error} = state.todos;
-        const undoneTasks = todos ? todos?.filter(todo => todo.status === 'NEVER') : [];   // done=true인 할일만 filter
+        const undoneTasks = data ? data.todoList.filter(todo => todo.status === 'NEVER') : [];   // done=true인 할일만 filter
         setCount(undoneTasks.length);
-    }, [state])
+    }, [data])
 
     // 날짜 계산
     const today = new Date();

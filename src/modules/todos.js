@@ -1,6 +1,12 @@
-import { act } from "react-dom/test-utils";
 import * as todoAPI from "../api/todos";
-import { createPromiseThunk, createPromiseThunkById, createPromiseThunkDeleteById, createPromiseThunkUpdateById, handleAsyncActions, handleAsyncActionsById, handleAsyncActionsDeleteById, handleAsyncActionsUpdateById, handleAsyncCreateActions, reducerUtils } from "../libs/asyncUtils";
+import {
+    createPromiseThunk,
+    createPromiseThunkById,
+    handleAsyncActions,
+    handleAsyncActionsById,
+    handleAsyncCreateActions,
+    reducerUtils
+} from "../libs/asyncUtils";
 /**
  * 이 모듈은 서브 리듀서이다. 루트 리듀서(modules/index.js)에 등록해서 사용.
  */
@@ -43,6 +49,14 @@ export const getTodos = createPromiseThunk(GET_TODOS, todoAPI.getTodos);
 export const getTodo = createPromiseThunkById(GET_TODO, todoAPI.getTodoById);
 export const updateTodo = createPromiseThunkById(UPDATE_TODO, todoAPI.updateTodoById);
 export const deleteTodo = createPromiseThunkById(DELETE_TODO, todoAPI.deleteTodoById);
+export const goHome = (navigate) => (dispatch, getState) => {
+    console.log("go home!")
+    navigate("/");
+}
+export const goLogin = (navigate) => (dispatch, getState) => {
+    // history.push("/login");
+    navigate("/login");
+}
 
 const initialState = {
     todos: reducerUtils.initial(),

@@ -21,13 +21,18 @@ export const createTodo = async (param) => {
     return response.data;
 }
 
-export const getTodos = async (username) => {
-    const response = await axios.get(`${BASE_URL}/${username}/todolist`);
+export const getTodos = async (param) => {
+    console.log("param: param");
+    const page = param.page ?? 1;
+    const response = await axios.get(`${BASE_URL}/${param.username}/todolist?page=${page - 1}&size=5`);
     console.log("todos: ", response);
-    let payload = response.data.content.todoList
-    // let pageable = response.data.content.pageable
+    let todoList = response.data.content.todoList
+    let pageable = response.data.content.pageable
     // return response.data;
-    return payload;
+    return {
+        todoList,
+        pageable,
+    };
 }
 
 export const getTodoById = async (param) => {

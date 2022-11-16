@@ -61,15 +61,15 @@ const Text = styled.div`
 
 // props.을 사용하지 않고 property 명을 적어줌으로써 간결하게 표현 가능!
 function TodoItem({ id, status, title }) {
-    const { username, jwt } = useSelector(state => state.accounts.account);
+    const { data, loading, error } = useSelector(state => state.accounts.account);
     const dispatch = useDispatch();
 
     const $updateTodo = () => {
-        dispatch(updateTodo({id, username}));
+        dispatch(updateTodo({id, username: data.username}));
     }
 
     const $deleteTodo = () => {
-        dispatch(deleteTodo({id, username}));
+        dispatch(deleteTodo({id, username: data.username}));
     }
 
     return (

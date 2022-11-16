@@ -2,6 +2,7 @@ import {Button} from "@mui/material";
 import React from "react";
 import {Link, Outlet} from "react-router-dom";
 import styled from "styled-components";
+import {useDispatch} from "react-redux";
 
 const Tab = styled.header `
     background: darkgreen;
@@ -16,18 +17,15 @@ const Tab = styled.header `
 
 const MenuList = styled.div `
     display: flex;
-    margin: 0px 20px;
+    margin: 0px 40px;
 `;
-const MenuItem = styled.div `
-    margin: 0px 20px;
-`;
-
 
 function TabBar() {
+    const dispatch = useDispatch()
     return (
         <>
             <Tab>
-                <div>TAB BAR</div>
+                <div>TODO APP</div>
                 <MenuList>
                     <Button variant="outlined">
                         <Link to={"/"}>Home</Link>
@@ -41,7 +39,6 @@ function TabBar() {
                     <Button variant="outlined">
                         <Link to={"/login"}>login</Link>
                     </Button>
-
                 </MenuList>
             </Tab>
             <Outlet/>
